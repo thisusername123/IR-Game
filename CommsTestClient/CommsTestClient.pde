@@ -8,7 +8,7 @@ String dataIn;
  
 void setup() { 
   size(640, 480); 
-  myClient = new Client(this, "127.0.0.1", 5204);
+  myClient = new Client(this, "172.12.152.42", 5204);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
       board[i][j] = false;
