@@ -1,8 +1,5 @@
 import processing.net.*;
-/**
-*  4 named bird Cards worth 2 each
-*  bird card worth 2 each
-*/
+
 int[][] boardCards = new int[7][7];//which card
 boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
@@ -28,7 +25,8 @@ void setup() {
     for(int j=0; j<7; j++) {
       boardState[i][j] = false;
     }
-  }  
+  }
+  randomizeCards();
 }
 
 void draw() {
@@ -74,7 +72,7 @@ void disconnectEvent() {
 }
 
 int whatColor(int i, int j){
-  int squareColor =0;
+  int squareColor = 0;
   if(i<=3 && j<=3){//green
     squareColor = 1;
   }
@@ -91,4 +89,24 @@ int whatColor(int i, int j){
     squareColor= 5;
   }
   return squareColor;
+}
+
+/**
+*  card IDs:
+*  0 Blank
+*  1 Bird
+*  2 Special Bird
+*  3 Null
+*  4 Crash
+*/
+int specialCount = 0;
+int nullCount = 0;
+int crashCount = 0;
+void randomizeCards(){
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      //int val = floor(random(0,4));
+      //boardCards[i][j] = val;
+    }
+  }
 }
