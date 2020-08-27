@@ -27,6 +27,13 @@ void setup() {
     }
   }
   randomizeCards();
+  //for(int i=0; i<7; i++) {
+  //  for(int j=0; j<7; j++) {
+  //    print(boardCards[i][j]);
+  //    print("  ");
+  //  }
+  //  println();
+  //}
 }
 
 void draw() {
@@ -105,8 +112,9 @@ int crashCount = 0;
 void randomizeCards(){
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      //int val = floor(random(0,4));
-      //boardCards[i][j] = val;
+      int val = floor(random(0,4));
+      boardCards[i][j] = val;
+      
     }
   }
 }
