@@ -5,16 +5,22 @@ boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
 boolean mousePressedPrev = false;
 int clients = 0;
+boolean fullSend = false;
+String dataOut;
+String dataIn;
+int curRobot = 1;
 
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 
-Robot robot1 = new Robot();
-Robot robot2 = new Robot();
-Robot robot3 = new Robot();
-Robot robot4 = new Robot();
+//Assigning the robots valuables and adds them to an array
+Robot robot1 = new Robot(1,384,384,0);
+Robot robot2 = new Robot(2,384,0,3);
+Robot robot3 = new Robot(3,0,0,2);
+Robot robot4 = new Robot(4,0,384,1);
+Robot[] robotList = {robot1,robot2, robot3, robot4};
 
 Server myServer;
 
@@ -27,13 +33,13 @@ void setup() {
     }
   }
   randomizeCards();
-  //for(int i=0; i<7; i++) {
-  //  for(int j=0; j<7; j++) {
-  //    print(boardCards[i][j]);
-  //    print("  ");
-  //  }
-  //  println();
-  //}
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      print(boardCards[i][j]);
+      print("  ");
+    }
+    println();
+  }
 }
 
 void draw() {
@@ -54,11 +60,17 @@ void draw() {
         rect(16+i*64,16+j*64,64,64);
         if(mouseClicked) {
           boardState[i][j] = !boardState[i][j];
-          myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
+          //myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
         }
       }
     }
   }
+  
+  //runs the functions to draw the robots
+  for(int i = 0;i<robotList.length; i++){
+    robotList[i].draw();
+  }
+  
   mousePressedPrev = mousePressed;
 }
 
@@ -97,7 +109,79 @@ int whatColor(int i, int j){
   }
   return squareColor;
 }
+void  keyReleased() 
+{
+  
+  //Selects the diferent robots based on the key pressed
+  if ((key == '1')) {
+    curRobot = 1;
+  }else if ((key == '2')) {
+    curRobot = 2;
+  }else if ((key == '3')) {
+    curRobot = 3;
+  }else if ((key == '4')) {
+    curRobot = 4;
+  }
+  
+  //runs the movement subroutines depends on the key pressed
+  if ((key == 'w' || key == 'W')) {
+    robotList[curRobot - 1].moveF();
+  }
+  if ((key == 's' || key == 'S')) {
+    robotList[curRobot - 1].moveB();
+  }
+  if ((key == 'a' || key == 'A')) {
+    robotList[curRobot - 1].turnL();
+  }
+  if ((key == 'd' || key == 'D')) {
+    robotList[curRobot - 1].turnR();
+  }
+  
+  //runs the border subroutine
+  for(int i = 0;i<robotList.length; i++){
+    robotList[i].border();
+  }
+  
+  //Sends the robot info to the client
+  myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  
+}
 
+void clientEvent(Client myClient) {
+  dataIn = myClient.readString();
+  if(dataIn != null) {
+    println("s"+dataIn);
+    interpretData();
+  }
+}
+
+/*void clientEvent(Server myServer) {
+  dataIn = myServer.readString();
+  if(dataIn != null) {
+    println("c"+dataIn);
+    interpretData();
+  }
+}*/
+
+void interpretData() {
+  String[] list = split(dataIn, ',');
+  switch(list[0]) {
+    case "0":
+      //boardState[int(list[1])][int(list[2])] = boolean(list[3]);
+      break;
+    case "1":
+      /*fullSend = true;
+      dataOut = "1";
+      //myServer.write(dataOut);*/
+      break;
+    case "2":
+      int robotInputNum = int(list[1]) - 1;
+      robotList[robotInputNum].x = int(list[2]);
+      robotList[robotInputNum].y = int(list[3]);
+      robotList[robotInputNum].dir = int(list[4]);
+    break;
+  }
+}
 /**
 *  card IDs:
 *  0 Blank
