@@ -27,13 +27,13 @@ void setup() {
     }
   }
   randomizeCards();
-  //for(int i=0; i<7; i++) {
-  //  for(int j=0; j<7; j++) {
-  //    print(boardCards[i][j]);
-  //    print("  ");
-  //  }
-  //  println();
-  //}
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      print(boardCards[i][j]);
+      print("  ");
+    }
+    println();
+  }
 }
 
 void draw() {
@@ -78,7 +78,7 @@ void disconnectEvent() {
   clients--;
 }
 
-int whatColor(int i, int j){
+int whatColor(int i, int j){ //idk about color anymore
   int squareColor = 0;
   if(i<=3 && j<=3){//green
     squareColor = 1;
@@ -86,7 +86,7 @@ int whatColor(int i, int j){
   if(i==3 && j==3){//middle
     squareColor = 2;
   }
-  if(i>=4 && j<=4){//blue
+  if(i>=4 && j<=4){//blue 
     squareColor = 3;
   }
   if(i<=2 && j>=3){//yellow
@@ -100,11 +100,11 @@ int whatColor(int i, int j){
 
 /**
 *  card IDs:
-*  0 Blank
-*  1 Bird
-*  2 Special Bird
-*  3 Null
-*  4 Crash
+*  0 Blank    2 per area
+*  1 Bird    4 per area
+*  2 Special Bird    1 per area
+*  3 Null    2 per area
+*  4 Crash    1 per area
 */
 int specialCount = 0;
 int nullCount = 0;
@@ -112,9 +112,27 @@ int crashCount = 0;
 void randomizeCards(){
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      int val = floor(random(0,4));
-      boardCards[i][j] = val;
+      if(i<=2 && j<=3){//top left
+        int val = floor(random(0,4));
+        if(boardCards[i][j] == 2){
+          specialCount++;
+        }
+        boardCards[i][j] = 1;
+      }else if(i>=3 && j<=2){ //bottom left
+        boardCards[i][j] = 2;
+      }else if(i<=3 && j>=4){ //top right
+        boardCards[i][j] = 3;
+      }else if(i>=3 && j>=3){ //bottom right also controlls middle
+        boardCards[i][j] = 4;
+      }else{
+        boardCards[i][j] = 0;
+      }
       
     }
   }
+}
+
+int doTheRandom(){
+  
+  return 0;
 }
