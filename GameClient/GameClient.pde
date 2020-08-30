@@ -12,10 +12,10 @@ int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
  
-Robot robot1 = new Robot(1,384,384,0);
-Robot robot2 = new Robot(2,384,0,3);
+Robot robot1 = new Robot(1,6,6,0);
+Robot robot2 = new Robot(2,6,0,3);
 Robot robot3 = new Robot(3,0,0,2);
-Robot robot4 = new Robot(4,0,384,1);
+Robot robot4 = new Robot(4,0,6,1);
 Robot[] robotList = {robot1,robot2, robot3, robot4};
 
 void setup() { 

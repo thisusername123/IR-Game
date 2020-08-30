@@ -9,8 +9,8 @@ public class Robot{
   //Sets up the robots atributes
   public Robot(int robotName, int robotX,int robotY, int robotDir){
     this.robotNum = robotName;
-    this.x = robotX + 16;
-    this.y = robotY + 16;
+    this.x = robotX * 64 + 16;
+    this.y = robotY * 64 + 16;
     this.dir = robotDir;
   }
   
