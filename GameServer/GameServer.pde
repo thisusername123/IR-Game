@@ -1,5 +1,6 @@
 import processing.net.*;
 
+Randomizer randomizer = new Randomizer();
 int[][] boardCards = new int[7][7];//which card
 boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
@@ -20,7 +21,7 @@ Robot robot1 = new Robot(1,384,384,0);
 Robot robot2 = new Robot(2,384,0,3);
 Robot robot3 = new Robot(3,0,0,2);
 Robot robot4 = new Robot(4,0,384,1);
-Robot[] robotList = {robot1,robot2, robot3, robot4};
+Robot[] robotList = {robot1, robot2, robot3, robot4};
 
 Server myServer;
 
@@ -190,33 +191,21 @@ void interpretData() {
 *  3 Null    2 per area
 *  4 Crash    1 per area
 */
-int specialCount = 0;
-int nullCount = 0;
-int crashCount = 0;
 void randomizeCards(){
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
       if(i<=2 && j<=3){//top left
-        int val = floor(random(0,4));
-        if(boardCards[i][j] == 2){
-          specialCount++;
+        boardCards[i][j] = randomizer.next();
+        }else if(i>=3 && j<=2){ //bottom left
+          boardCards[i][j] = randomizer.next();
+        }else if(i<=3 && j>=4){ //top right
+          boardCards[i][j] = randomizer.next();
+        }else if(i>=3 && j>=3){ //bottom right also controls middle
+          boardCards[i][j] = randomizer.next();
+        }else{
+          boardCards[i][j] = randomizer.next();
         }
-        boardCards[i][j] = 1;
-      }else if(i>=3 && j<=2){ //bottom left
-        boardCards[i][j] = 2;
-      }else if(i<=3 && j>=4){ //top right
-        boardCards[i][j] = 3;
-      }else if(i>=3 && j>=3){ //bottom right also controlls middle
-        boardCards[i][j] = 4;
-      }else{
-        boardCards[i][j] = 0;
-      }
       
     }
   }
-}
-
-int doTheRandom(){
-  
-  return 0;
 }
