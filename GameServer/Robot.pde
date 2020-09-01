@@ -1,5 +1,6 @@
 public class Robot{
   
+  //private int[] robot; //index0: whichRobot | index1: x | index2: y | index3: directionFacing
   public int robotNum;
   public int x;
   public int y;
