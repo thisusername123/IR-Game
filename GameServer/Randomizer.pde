@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Arrays;
 
 class Randomizer {
     private final List<Integer> INPUTS = Collections.unmodifiableList(Arrays.asList(0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 3, 4));
@@ -14,7 +16,7 @@ class Randomizer {
 
     public int next() {
         if (pos == list.size()) {
-        Collections.shuffle(list); // reshuffle
+        Collections.shuffle(list); //reshuffle
         pos = 0;
     }
     return list.get(pos++);

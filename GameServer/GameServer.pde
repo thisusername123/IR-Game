@@ -3,8 +3,10 @@ import processing.net.*;
 Randomizer randomizer = new Randomizer();
 int[][] boardCards = new int[7][7];//which card
 boolean[][] boardState = new boolean[7][7];//picked up or not
+
 boolean mouseClicked = false;
 boolean mousePressedPrev = false;
+
 int clients = 0;
 boolean fullSend = false;
 String dataOut;
@@ -15,6 +17,8 @@ int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
+
+public boolean turnEnded = false;
 
 //Assigning the robots valuables and adds them to an array
 Robot robot1 = new Robot(1,384,384,0);
@@ -41,6 +45,14 @@ void setup() {
     }
     println();
   }
+  
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      print(boardState[i][j]);
+      print("  ");
+    }
+    println();
+  }
 }
 
 void draw() {
@@ -61,7 +73,9 @@ void draw() {
         rect(16+i*64,16+j*64,64,64);
         if(mouseClicked) {
           boardState[i][j] = !boardState[i][j];
-          //myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
+          myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
+          myServer.write("3,"+str(i)+","+str(j)+","+(boardCards[i][j]));
+          print(boardCards[i][j] + " " + boardState[i][j] + "; ");
         }
       }
     }
@@ -71,7 +85,6 @@ void draw() {
   for(int i = 0;i<robotList.length; i++){
     robotList[i].draw();
   }
-  
   mousePressedPrev = mousePressed;
 }
 
@@ -110,9 +123,8 @@ int whatColor(int i, int j){ //idk about color anymore
   }
   return squareColor;
 }
-void  keyReleased() 
-{
-  
+
+void  keyReleased() {
   //Selects the diferent robots based on the key pressed
   if ((key == '1')) {
     curRobot = 1;
@@ -203,7 +215,7 @@ void randomizeCards(){
         }else if(i>=3 && j>=3){ //bottom right also controls middle
           boardCards[i][j] = randomizer.next();
         }else{
-          boardCards[i][j] = randomizer.next();
+          //boardCards[i][j] = randomizer.next();
         }
       
     }
