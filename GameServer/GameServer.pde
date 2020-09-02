@@ -1,7 +1,7 @@
 import processing.net.*;
 
-int[][] boardCards = new int[7][7];//which card
-boolean[][] boardState = new boolean[7][7];//picked up or not
+Card[][] boardCards = new Card[7][7];//which card
+//boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
 boolean mousePressedPrev = false;
 int clients = 0;
@@ -20,6 +20,7 @@ Robot robot1 = new Robot(1,6,6,0);
 Robot robot2 = new Robot(2,6,0,3);
 Robot robot3 = new Robot(3,0,0,2);
 Robot robot4 = new Robot(4,0,6,1);
+C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
 
 Server myServer;
@@ -29,14 +30,15 @@ void setup() {
   myServer = new Server(this, 5204);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      boardState[i][j] = false;
+      //boardState[i][j] = false;
     }
   }
-  randomizeCards();
+  boardCards = c_Randomizer.Randomize();
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      print(boardCards[i][j]);
-      print("  ");
+      //boardCards[i][j].show();
+      //print(boardCards[i][j].type);
+      //print("  ");
     }
     println();
   }
@@ -59,7 +61,7 @@ void draw() {
         fill(0x40808080);
         rect(16+i*64,16+j*64,64,64);
         if(mouseClicked) {
-          boardState[i][j] = !boardState[i][j];
+          //boardState[i][j] = !boardState[i][j];
           //myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
         }
       }
@@ -194,11 +196,12 @@ int specialCount = 0;
 int nullCount = 0;
 int crashCount = 0;
 void randomizeCards(){
-  for(int i=0; i<7; i++) {
+  boardCards = c_Randomizer.Randomize();
+  /*for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
       int val = floor(random(0,4));
       boardCards[i][j] = val;
       
     }
-  }
+  }*/
 }
