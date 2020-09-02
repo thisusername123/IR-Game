@@ -1,5 +1,6 @@
 import processing.net.*;
 
+Randomizer randomizer = new Randomizer();
 int[][] boardCards = new int[7][7];//which card
 boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
@@ -40,6 +41,15 @@ void setup() {
     }
     println();
   }
+  
+  randomizeCards();
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      print(boardState[i][j]);
+      print("  ");
+    }
+    println();
+  }
 }
 
 void draw() {
@@ -60,7 +70,9 @@ void draw() {
         rect(16+i*64,16+j*64,64,64);
         if(mouseClicked) {
           boardState[i][j] = !boardState[i][j];
-          //myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
+          myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
+          myServer.write("3,"+str(i)+","+str(j)+","+(boardCards[i][j]));
+          print(boardCards[i][j] + " " + boardState[i][j] + "; ");
         }
       }
     }
@@ -182,22 +194,29 @@ void interpretData() {
     break;
   }
 }
+
 /**
 *  card IDs:
-*  0 Blank
-*  1 Bird
-*  2 Special Bird
-*  3 Null
-*  4 Crash
+*  0 Blank    2 per area
+*  1 Bird    4 per area
+*  2 Special Bird    1 per area
+*  3 Null    2 per area
+*  4 Crash    1 per area
 */
-int specialCount = 0;
-int nullCount = 0;
-int crashCount = 0;
 void randomizeCards(){
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      int val = floor(random(0,4));
-      boardCards[i][j] = val;
+      if(i<=2 && j<=3){//top left
+        boardCards[i][j] = randomizer.next();
+        }else if(i>=3 && j<=2){ //bottom left
+          boardCards[i][j] = randomizer.next();
+        }else if(i<=3 && j>=4){ //top right
+          boardCards[i][j] = randomizer.next();
+        }else if(i>=3 && j>=3){ //bottom right also controls middle
+          boardCards[i][j] = randomizer.next();
+        }else{
+          //boardCards[i][j] = randomizer.next();
+        }
       
     }
   }
