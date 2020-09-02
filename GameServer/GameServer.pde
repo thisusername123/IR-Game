@@ -16,10 +16,10 @@ int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 
 //Assigning the robots valuables and adds them to an array
-Robot robot1 = new Robot(1,6,6,0);
-Robot robot2 = new Robot(2,6,0,3);
-Robot robot3 = new Robot(3,0,0,2);
-Robot robot4 = new Robot(4,0,6,1);
+Robot robot1 = new Robot(1,5,6,0);
+Robot robot2 = new Robot(2,6,1,3);
+Robot robot3 = new Robot(3,1,0,2);
+Robot robot4 = new Robot(4,0,5,1);
 C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
 
@@ -34,14 +34,6 @@ void setup() {
     }
   }
   boardCards = c_Randomizer.Randomize();
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      //boardCards[i][j].show();
-      //print(boardCards[i][j].type);
-      //print("  ");
-    }
-    println();
-  }
 }
 
 void draw() {
@@ -66,6 +58,15 @@ void draw() {
         }
       }
     }
+  }
+  
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      boardCards[i][j].show();
+      //print(boardCards[i][j].type);
+      //print("  ");
+    }
+    //println();
   }
   
   //runs the functions to draw the robots
@@ -191,6 +192,8 @@ void interpretData() {
 *  2 Special Bird
 *  3 Null
 *  4 Crash
+*  5 Hello World
+*  6 Nest
 */
 int specialCount = 0;
 int nullCount = 0;

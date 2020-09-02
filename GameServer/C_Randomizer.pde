@@ -47,12 +47,12 @@ public class C_Randomizer {
       }
       resetList();
       Collections.shuffle(INPUTS);
-      for(int i=4; i<7; i++) {
+      for(int i=3; i<7; i++) {
         for(int j=0; j<3; j++) {
-        if (i == 6 && j == 1){
+        if (i == 5 && j == 0){
             Card card = new Card(j,i,5,0,0);
             cards[i][j] = card;
-          }else if (i == 6 && j == 2){
+          }else if (i == 4 && j == 0){
             Card card = new Card(j,i,6,0,0);
             cards[i][j] = card;
           }else{
@@ -85,10 +85,10 @@ public class C_Randomizer {
       Collections.shuffle(INPUTS);
       for(int i=4; i<7; i++) {
         for(int j=3; j<7; j++) {
-        if (i == 6 && j == 4){
+        if (i == 6 && j == 5){
             Card card = new Card(j,i,5,0,0);
             cards[i][j] = card;
-          }else if (i == 6 && j == 5){
+          }else if (i == 6 && j == 4){
             Card card = new Card(j,i,6,0,0);
             cards[i][j] = card;
           }else{
@@ -99,8 +99,8 @@ public class C_Randomizer {
           }
         }
       }
-      Card card = new Card(3,3,0,0,0);
-      cards[3][3] = card;
+      Card card1 = new Card(3,3,0,0,0);
+      cards[3][3] = card1;
       return cards;
     }
     public void resetList (){
