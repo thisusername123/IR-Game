@@ -1,8 +1,7 @@
 import processing.net.*;
 
-Randomizer randomizer = new Randomizer();
-int[][] boardCards = new int[7][7];//which card
-boolean[][] boardState = new boolean[7][7];//picked up or not
+Card[][] boardCards = new Card[7][7];//which card
+//boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
 boolean mousePressedPrev = false;
 int clients = 0;
@@ -17,10 +16,11 @@ int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 
 //Assigning the robots valuables and adds them to an array
-Robot robot1 = new Robot(1,6,6,0);
-Robot robot2 = new Robot(2,6,0,3);
-Robot robot3 = new Robot(3,0,0,2);
-Robot robot4 = new Robot(4,0,6,1);
+Robot robot1 = new Robot(1,5,6,0);
+Robot robot2 = new Robot(2,6,1,3);
+Robot robot3 = new Robot(3,1,0,2);
+Robot robot4 = new Robot(4,0,5,1);
+C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
 
 Server myServer;
@@ -30,25 +30,10 @@ void setup() {
   myServer = new Server(this, 5204);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      boardState[i][j] = false;
+      //boardState[i][j] = false;
     }
   }
-  randomizeCards();
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      print(boardCards[i][j]);
-      print("  ");
-    }
-    println();
-  }
-  
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      print(boardState[i][j]);
-      print("  ");
-    }
-    println();
-  }
+  boardCards = c_Randomizer.Randomize();
 }
 
 void draw() {
@@ -68,13 +53,20 @@ void draw() {
         fill(0x40808080);
         rect(16+i*64,16+j*64,64,64);
         if(mouseClicked) {
-          boardState[i][j] = !boardState[i][j];
-          myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
-          myServer.write("3,"+str(i)+","+str(j)+","+(boardCards[i][j]));
-          print(boardCards[i][j] + " " + boardState[i][j] + "; ");
+          //boardState[i][j] = !boardState[i][j];
+          //myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
         }
       }
     }
+  }
+  
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      boardCards[i][j].show();
+      //print(boardCards[i][j].type);
+      //print("  ");
+    }
+    //println();
   }
   
   //runs the functions to draw the robots
@@ -193,30 +185,26 @@ void interpretData() {
     break;
   }
 }
-
 /**
 *  card IDs:
-*  0 Blank    2 per area
-*  1 Bird    4 per area
-*  2 Special Bird    1 per area
-*  3 Null    2 per area
-*  4 Crash    1 per area
+*  0 Blank
+*  1 Bird
+*  2 Special Bird
+*  3 Null
+*  4 Crash
+*  5 Hello World
+*  6 Nest
 */
+int specialCount = 0;
+int nullCount = 0;
+int crashCount = 0;
 void randomizeCards(){
-  for(int i=0; i<7; i++) {
+  boardCards = c_Randomizer.Randomize();
+  /*for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      if(i<=2 && j<=3){//top left
-        boardCards[i][j] = randomizer.next();
-        }else if(i>=3 && j<=2){ //bottom left
-          boardCards[i][j] = randomizer.next();
-        }else if(i<=3 && j>=4){ //top right
-          boardCards[i][j] = randomizer.next();
-        }else if(i>=3 && j>=3){ //bottom right also controls middle
-          boardCards[i][j] = randomizer.next();
-        }else{
-          //boardCards[i][j] = randomizer.next();
-        }
+      int val = floor(random(0,4));
+      boardCards[i][j] = val;
       
     }
-  }
+  }*/
 }
