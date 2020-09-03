@@ -14,6 +14,7 @@ int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
+int[] scores = {scoreTeam1,scoreTeam2,scoreTeam3,scoreTeam4};
 
 //Assigning the robots valuables and adds them to an array
 Robot robot1 = new Robot(1,5,6,0);
@@ -42,20 +43,7 @@ void draw() {
   background(44, 62, 80);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      switch(whatColor(i, j)){
-        case 1: fill(0,255,0); break;
-        case 2: fill(255,255,255); break;
-        case 3: fill(0,0,255); break;
-        case 4: fill(255,255,0); break;
-        case 5: fill(255,0,0); break;
-      }
-      rect(16+i*64,16+j*64,64,64);
-      if(tileMouseX()==i && tileMouseY()==j) {
-        fill(0x40808080);
-        rect(16+i*64,16+j*64,64,64);
-        if(mouseClicked) {
-        }
-      }
+      boardCards[i][j].draw();
     }
   }
   
@@ -66,6 +54,11 @@ void draw() {
       //print("  ");
     }
     //println();
+  }
+  for (int i = 0; i < scores.length;i++){
+    fill(255,255,255);
+    textSize(32);
+    text(scores[i], 464, i * 32 + 32);
   }
   
   //runs the functions to draw the robots
@@ -92,7 +85,7 @@ void disconnectEvent() {
   clients--;
 }
 
-int whatColor(int i, int j){
+/*int whatColor(int i, int j){
   int squareColor = 0;
   if(i<=3 && j<=3){//green
     squareColor = 1;
@@ -110,7 +103,7 @@ int whatColor(int i, int j){
     squareColor= 5;
   }
   return squareColor;
-}
+}*/
 void  keyReleased() 
 {
   
@@ -138,6 +131,64 @@ void  keyReleased()
   if ((key == 'd' || key == 'D')) {
     robotList[curRobot - 1].turnR();
   }
+  //interact with cards
+  if (key == ' ') {
+    if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0 && boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team ==0){
+        switch(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type){
+          case 0: println("blank"); break;
+          case 1: boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Bird"); break;
+          case 2: boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Special Bird"); break;
+          case 3: switch(curRobot){
+            case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
+            case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
+            case 3: robotList[curRobot - 1].y = 1; robotList[curRobot - 1].x = 2; break;
+            case 4: robotList[curRobot - 1].y = 5; robotList[curRobot - 1].x = 1; break;   
+          }
+          for(int i=0; i<7; i++) {
+            for(int j=0; j<7; j++) {
+              boardCards[i][j].deCarry(curRobot);
+              robotList[curRobot-1].dir = 0;
+              //print(boardCards[i][j].type);
+              //print("  ");
+            }
+            //println();
+          }
+          println("Null");
+          break;
+          case 4: switch(curRobot){
+            case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
+            case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
+            case 3: robotList[curRobot - 1].y = 1; robotList[curRobot - 1].x = 2; break;
+            case 4: robotList[curRobot - 1].y = 5; robotList[curRobot - 1].x = 1; break;  
+          }
+          for(int i=0; i<7; i++) {
+            for(int j=0; j<7; j++) {
+              boardCards[i][j].deCarry(curRobot);
+              robotList[curRobot-1].dir = 0;
+              //print(boardCards[i][j].type);
+              //print("  ");
+            }
+            //println();
+          }
+          println("Crash");
+          break;
+          case 5: println("Hello World"); break;
+          case 6: 
+          for(int i=0; i<7; i++) {
+            for(int j=0; j<7; j++) {
+              if(boardCards[i][j].state == 1 && boardCards[i][j].team == curRobot){
+                boardCards[i][j].state = 2;
+                switch(boardCards[i][j].type){
+                  case 1: scores[curRobot - 1]++; break;
+                  case 2: scores[curRobot - 1] = scores[curRobot - 1] + 2; break;
+                }
+              }
+            }
+          }
+          println("Cards Secured");break;
+        }
+      }
+    }
   
   //runs the border subroutine
   for(int i = 0;i<robotList.length; i++){
