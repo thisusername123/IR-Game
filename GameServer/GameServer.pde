@@ -56,7 +56,12 @@ void draw() {
     //println();
   }
   for (int i = 0; i < scores.length;i++){
-    fill(255,255,255);
+    switch(i){
+      case 0: fill(255,0,0);break;
+      case 1: fill(0,0,255);break;
+      case 2: fill(0,255,0);break;
+      case 3: fill(255,255,0);break;
+    }
     textSize(32);
     text(scores[i], 464, i * 32 + 32);
   }
