@@ -1,6 +1,10 @@
 import processing.net.*;
 
+
 Card[][] boardCards = new Card[7][7];//which card
+//boolean[][] boardState = new boolean[7][7];//picked up or not
+//Randomizer randomizer = new Randomizer();
+//int[][] boardCards = new int[7][7];//which card
 //boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
 boolean mousePressedPrev = false;
@@ -34,6 +38,24 @@ void setup() {
     }
   }
   boardCards = c_Randomizer.Randomize();
+  
+  //c_Randomizer.Randomize();
+  //randomizeCards();
+  //for(int i=0; i<7; i++) {
+  //  for(int j=0; j<7; j++) {
+  //    print(boardCards[i][j]);
+  //    print("  ");
+  //  }
+  //  println();
+  //}
+  
+  //for(int i=0; i<7; i++) {
+  //  for(int j=0; j<7; j++) {
+  //    print(boardState[i][j]);
+  //    print("  ");
+  //  }
+  //  println();
+  //}
 }
 
 void draw() {
@@ -53,8 +75,6 @@ void draw() {
         fill(0x40808080);
         rect(16+i*64,16+j*64,64,64);
         if(mouseClicked) {
-          //boardState[i][j] = !boardState[i][j];
-          //myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
         }
       }
     }
