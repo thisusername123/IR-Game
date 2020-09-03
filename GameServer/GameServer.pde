@@ -138,11 +138,11 @@ void  keyReleased()
   }
   //interact with cards
   if (key == ' ') {
-    if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0 && boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team ==0){
+    if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0){
         switch(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type){
-          case 0: println("blank"); break;
-          case 1: boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Bird"); break;
-          case 2: boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Special Bird"); break;
+          case 0: /*println("blank");*/ break;
+          case 1: if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == 0){boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Bird");} break;
+          case 2: if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == 0){boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Special Bird");} break;
           case 3: switch(curRobot){
             case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
             case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
@@ -179,18 +179,21 @@ void  keyReleased()
           break;
           case 5: println("Hello World"); break;
           case 6: 
-          for(int i=0; i<7; i++) {
-            for(int j=0; j<7; j++) {
-              if(boardCards[i][j].state == 1 && boardCards[i][j].team == curRobot){
-                boardCards[i][j].state = 2;
-                switch(boardCards[i][j].type){
-                  case 1: scores[curRobot - 1]++; break;
-                  case 2: scores[curRobot - 1] = scores[curRobot - 1] + 2; break;
+          if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == curRobot){
+            for(int i=0; i<7; i++) {
+              for(int j=0; j<7; j++) {
+                if(boardCards[i][j].state == 1 && boardCards[i][j].team == curRobot){
+                  boardCards[i][j].state = 2;
+                  switch(boardCards[i][j].type){
+                    case 1: scores[curRobot - 1]++; break;
+                    case 2: scores[curRobot - 1] = scores[curRobot - 1] + 2; break;
+                  }
                 }
               }
             }
+            println("Cards Secured");
           }
-          println("Cards Secured");break;
+          break;
         }
       }
     }

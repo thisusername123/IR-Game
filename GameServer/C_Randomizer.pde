@@ -31,10 +31,10 @@ public class C_Randomizer {
       for(int i=0; i<3; i++) {
         for(int j=0; j<4; j++) {
           if (i == 0 && j == 1){
-            Card card = new Card(j,i,5,0,0);
+            Card card = new Card(j,i,5,0,3);
             cards[i][j] = card;
           }else if (i == 0 && j == 2){
-            Card card = new Card(j,i,6,0,0);
+            Card card = new Card(j,i,6,0,3);
             cards[i][j] = card;
           }else{
             int val = inputs.get(0);
@@ -50,10 +50,10 @@ public class C_Randomizer {
       for(int i=3; i<7; i++) {
         for(int j=0; j<3; j++) {
         if (i == 5 && j == 0){
-            Card card = new Card(j,i,5,0,0);
+            Card card = new Card(j,i,5,0,4);
             cards[i][j] = card;
           }else if (i == 4 && j == 0){
-            Card card = new Card(j,i,6,0,0);
+            Card card = new Card(j,i,6,0,4);
             cards[i][j] = card;
           }else{
             int val = inputs.get(0);
@@ -68,10 +68,10 @@ public class C_Randomizer {
       for(int i=0; i<4; i++) {
         for(int j=4; j<7; j++) {
         if (i == 1 && j == 6){
-            Card card = new Card(j,i,5,0,0);
+            Card card = new Card(j,i,5,0,2);
             cards[i][j] = card;
           }else if (i == 2 && j == 6){
-            Card card = new Card(j,i,6,0,0);
+            Card card = new Card(j,i,6,0,2);
             cards[i][j] = card;
           }else{
             int val = inputs.get(0);
@@ -86,10 +86,10 @@ public class C_Randomizer {
       for(int i=4; i<7; i++) {
         for(int j=3; j<7; j++) {
         if (i == 6 && j == 5){
-            Card card = new Card(j,i,5,0,0);
+            Card card = new Card(j,i,5,0,1);
             cards[i][j] = card;
           }else if (i == 6 && j == 4){
-            Card card = new Card(j,i,6,0,0);
+            Card card = new Card(j,i,6,0,1);
             cards[i][j] = card;
           }else{
             int val = inputs.get(0);
