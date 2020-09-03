@@ -70,7 +70,7 @@ void draw() {
         if(mouseClicked) {
           boardState[i][j] = !boardState[i][j];
           myServer.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
-          myServer.write("3,"+str(i)+","+str(j)+","+(boardCards[i][j]));
+          myServer.write("3,"+str(i)+","+str(j)+","+ boardCards[i][j]);
           print(boardCards[i][j] + " " + boardState[i][j] + "; ");
         }
       }
