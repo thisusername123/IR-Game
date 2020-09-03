@@ -1,5 +1,6 @@
 import processing.net.*;
 
+C_Randomizer c_Randomizer = new C_Randomizer();
 Randomizer randomizer = new Randomizer();
 int[][] boardCards = new int[7][7];//which card
 boolean[][] boardState = new boolean[7][7];//picked up or not
@@ -33,22 +34,26 @@ void setup() {
       boardState[i][j] = false;
     }
   }
-  randomizeCards();
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      print(boardCards[i][j]);
-      print("  ");
-    }
-    println();
-  }
   
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      print(boardState[i][j]);
-      print("  ");
-    }
-    println();
-  }
+  c_Randomizer.Randomize();
+  //randomizeCards();
+  //for(int i=0; i<7; i++) {
+  //  for(int j=0; j<7; j++) {
+  //    print(boardCards[i][j]);
+  //    print("  ");
+  //  }
+  //  println();
+  //}
+  
+  //for(int i=0; i<7; i++) {
+  //  for(int j=0; j<7; j++) {
+  //    print(boardState[i][j]);
+  //    print("  ");
+  //  }
+  //  println();
+  //}
+  
+  
 }
 
 void draw() {
