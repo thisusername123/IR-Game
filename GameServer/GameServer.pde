@@ -2,10 +2,6 @@ import processing.net.*;
 
 
 Card[][] boardCards = new Card[7][7];//which card
-//boolean[][] boardState = new boolean[7][7];//picked up or not
-//Randomizer randomizer = new Randomizer();
-//int[][] boardCards = new int[7][7];//which card
-//boolean[][] boardState = new boolean[7][7];//picked up or not
 boolean mouseClicked = false;
 boolean mousePressedPrev = false;
 int clients = 0;
@@ -39,23 +35,6 @@ void setup() {
   }
   boardCards = c_Randomizer.Randomize();
   
-  //c_Randomizer.Randomize();
-  //randomizeCards();
-  //for(int i=0; i<7; i++) {
-  //  for(int j=0; j<7; j++) {
-  //    print(boardCards[i][j]);
-  //    print("  ");
-  //  }
-  //  println();
-  //}
-  
-  //for(int i=0; i<7; i++) {
-  //  for(int j=0; j<7; j++) {
-  //    print(boardState[i][j]);
-  //    print("  ");
-  //  }
-  //  println();
-  //}
 }
 
 void draw() {
@@ -204,27 +183,4 @@ void interpretData() {
       robotList[robotInputNum].dir = int(list[4]);
     break;
   }
-}
-/**
-*  card IDs:
-*  0 Blank
-*  1 Bird
-*  2 Special Bird
-*  3 Null
-*  4 Crash
-*  5 Hello World
-*  6 Nest
-*/
-int specialCount = 0;
-int nullCount = 0;
-int crashCount = 0;
-void randomizeCards(){
-  boardCards = c_Randomizer.Randomize();
-  /*for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      int val = floor(random(0,4));
-      boardCards[i][j] = val;
-      
-    }
-  }*/
 }
