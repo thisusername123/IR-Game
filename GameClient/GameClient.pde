@@ -20,7 +20,7 @@ Robot[] robotList = {robot1,robot2, robot3, robot4};
 
 void setup() { 
   size(1280, 720); 
-  myClient = new Client(this, /*"172.12.152.42"*/"10.0.0.21", 5204);
+  myClient = new Client(this, "172.12.152.42", 5204);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
       boardState[i][j] = false;
