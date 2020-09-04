@@ -9,6 +9,7 @@ boolean fullSend = false;
 String dataOut;
 String dataIn;
 int curRobot = 1;
+boolean forceSpace = false;
 
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
@@ -29,13 +30,7 @@ Server myServer;
 void setup() {
   size(1280, 720);
   myServer = new Server(this, 5204);
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      //boardState[i][j] = false;
-    }
-  }
   boardCards = c_Randomizer.Randomize();
-  
 }
 
 void draw() {
@@ -84,6 +79,11 @@ int tileMouseY() {
 
 void serverEvent() {
   clients++;
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      myServer.write("3,"+str(boardCards[i][j].x)+","+str(boardCards[i][j].y)+","+str(boardCards[i][j].type)+","+str(boardCards[i][j].state)+","+str(boardCards[i][j].team));
+    }
+  }
 }
 
 void disconnectEvent() {
@@ -126,18 +126,23 @@ void  keyReleased()
   //runs the movement subroutines depends on the key pressed
   if ((key == 'w' || key == 'W')) {
     robotList[curRobot - 1].moveF();
+    myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
   }
   if ((key == 's' || key == 'S')) {
     robotList[curRobot - 1].moveB();
+    myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
   }
   if ((key == 'a' || key == 'A')) {
     robotList[curRobot - 1].turnL();
+    myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
   }
   if ((key == 'd' || key == 'D')) {
     robotList[curRobot - 1].turnR();
+    myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
   }
   //interact with cards
-  if (key == ' ') {
+  if (key == ' ' || forceSpace == true) {
+    forceSpace = false;
     if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0){
         switch(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type){
           case 0: /*println("blank");*/ break;
@@ -158,6 +163,7 @@ void  keyReleased()
             }
             //println();
           }
+          myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
           println("Null");
           break;
           case 4: switch(curRobot){
@@ -175,6 +181,7 @@ void  keyReleased()
             }
             //println();
           }
+          myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
           println("Crash");
           break;
           case 5: println("Hello World"); break;
@@ -192,10 +199,12 @@ void  keyReleased()
               }
             }
             println("Cards Secured");
+            myServer.write("5,"+str(scores[curRobot-1])+","+str(curRobot-1));
           }
           break;
         }
       }
+      //myServer.write("3,"+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].x)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].y)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team));
     }
   
   //runs the border subroutine
@@ -204,7 +213,7 @@ void  keyReleased()
   }
   
   //Sends the robot info to the client
-  myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  myServer.write("3,"+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].x)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].y)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team));
   
 }
 
@@ -240,6 +249,11 @@ void interpretData() {
       robotList[robotInputNum].x = int(list[2]);
       robotList[robotInputNum].y = int(list[3]);
       robotList[robotInputNum].dir = int(list[4]);
+      myServer.write("3,"+str(boardCards[robotList[robotInputNum].y][robotList[robotInputNum].x].x)+","+str(boardCards[robotList[robotInputNum].y][robotList[robotInputNum].x].y)+","+str(boardCards[robotList[robotInputNum].y][robotList[robotInputNum].x].type)+","+str(boardCards[robotList[robotInputNum].y][robotList[robotInputNum].x].state)+","+str(boardCards[robotList[robotInputNum].y][robotList[robotInputNum].x].team));
+    break;
+    case "4":
+      forceSpace = true;
+      keyReleased();
     break;
   }
 }

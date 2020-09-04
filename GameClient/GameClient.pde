@@ -1,7 +1,7 @@
 import processing.net.*; 
 
 Client myClient; 
-boolean[][] boardState = new boolean[7][7];
+Card[][] boardCards = new Card[7][7];//which card
 boolean mousePressedPrev = false;
 boolean mouseClicked = false;
 String dataIn;
@@ -11,11 +11,13 @@ int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
+int[] scores = {scoreTeam1,scoreTeam2,scoreTeam3,scoreTeam4};
  
-Robot robot1 = new Robot(1,6,6,0);
-Robot robot2 = new Robot(2,6,0,3);
-Robot robot3 = new Robot(3,0,0,2);
-Robot robot4 = new Robot(4,0,6,1);
+Robot robot1 = new Robot(1,5,6,0);
+Robot robot2 = new Robot(2,6,1,3);
+Robot robot3 = new Robot(3,1,0,2);
+Robot robot4 = new Robot(4,0,5,1);
+C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
 
 void setup() { 
@@ -23,10 +25,10 @@ void setup() {
   myClient = new Client(this, /*"172.12.152.42"*/"10.0.0.21", 5204);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      boardState[i][j] = false;
+      //boardState[i][j] = false;
     }
   }
-  myClient.write("1");
+  boardCards = c_Randomizer.Randomize();
 } 
  
 void draw() {
@@ -34,23 +36,26 @@ void draw() {
   background(44, 62, 80);
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      switch(whatColor(i, j)){
-        case 1: fill(0,255,0); break;
-        case 2: fill(255,255,255); break;
-        case 3: fill(0,0,255); break;
-        case 4: fill(255,255,0); break;
-        case 5: fill(255,0,0); break;
-      }
-      rect(16+i*64,16+j*64,64,64);
-      if(tileMouseX()==i && tileMouseY()==j) {
-        fill(0x40808080);
-        rect(16+i*64,16+j*64,64,64);
-        if(mouseClicked) {
-          boardState[i][j] = !boardState[i][j];
-          //myClient.write("0,"+str(i)+","+str(j)+","+(boardState[i][j]?"true":"false"));
-        }
-      }
+      boardCards[i][j].draw();
     }
+  }
+  for(int i=0; i<7; i++) {
+    for(int j=0; j<7; j++) {
+      boardCards[i][j].show();
+      //print(boardCards[i][j].type);
+      //print("  ");
+    }
+    //println();
+  }
+  for (int i = 0; i < scores.length;i++){
+    switch(i){
+      case 0: fill(255,0,0);break;
+      case 1: fill(0,0,255);break;
+      case 2: fill(0,255,0);break;
+      case 3: fill(255,255,0);break;
+    }
+    textSize(32);
+    text(scores[i], 464, i * 32 + 32);
   }
   
   for(int i = 0;i<robotList.length; i++){
@@ -68,7 +73,7 @@ int tileMouseY() {
   return floor((mouseY-16)/64);
 }
 
-int whatColor(int i, int j){
+/*int whatColor(int i, int j){
   int squareColor = 0;
   if(i<=3 && j<=3){//green
     squareColor = 1;
@@ -86,7 +91,7 @@ int whatColor(int i, int j){
     squareColor= 5;
   }
   return squareColor;
-}
+}*/
 
 void  keyReleased() 
 {
@@ -105,23 +110,94 @@ void  keyReleased()
   //runs the movement subroutines depends on the key pressed
   if ((key == 'w' || key == 'W')) {
     robotList[curRobot - 1].moveF();
+    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  
   }
   if ((key == 's' || key == 'S')) {
     robotList[curRobot - 1].moveB();
+    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  
   }
   if ((key == 'a' || key == 'A')) {
     robotList[curRobot - 1].turnL();
+    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  
   }
   if ((key == 'd' || key == 'D')) {
     robotList[curRobot - 1].turnR();
+    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  
   }
+  
+  //interact with cards
+  if (key == ' ') {
+    myClient.write("4");
+//    if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0){
+//        switch(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type){
+//          case 0: /*println("blank");*/ break;
+//          case 1: if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == 0){boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Bird");} break;
+//          case 2: if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == 0){boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Special Bird");} break;
+//          case 3: switch(curRobot){
+//            case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
+//            case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
+//            case 3: robotList[curRobot - 1].y = 1; robotList[curRobot - 1].x = 2; break;
+//            case 4: robotList[curRobot - 1].y = 5; robotList[curRobot - 1].x = 1; break;   
+//          }
+//          for(int i=0; i<7; i++) {
+//            for(int j=0; j<7; j++) {
+//              boardCards[i][j].deCarry(curRobot);
+//              robotList[curRobot-1].dir = 0;
+//              //print(boardCards[i][j].type);
+//              //print("  ");
+//            }
+//            //println();
+//          }
+//          println("Null");
+//          break;
+//          case 4: switch(curRobot){
+//            case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
+//            case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
+//            case 3: robotList[curRobot - 1].y = 1; robotList[curRobot - 1].x = 2; break;
+//            case 4: robotList[curRobot - 1].y = 5; robotList[curRobot - 1].x = 1; break;  
+//          }
+//          for(int i=0; i<7; i++) {
+//            for(int j=0; j<7; j++) {
+//              boardCards[i][j].deCarry(curRobot);
+//              robotList[curRobot-1].dir = 0;
+//              //print(boardCards[i][j].type);
+//              //print("  ");
+//            }
+//            //println();
+//          }
+//          println("Crash");
+//          break;
+//          case 5: println("Hello World"); break;
+//          case 6: 
+//          if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == curRobot){
+//            for(int i=0; i<7; i++) {
+//              for(int j=0; j<7; j++) {
+//                if(boardCards[i][j].state == 1 && boardCards[i][j].team == curRobot){
+//                  boardCards[i][j].state = 2;
+//                  switch(boardCards[i][j].type){
+//                    case 1: scores[curRobot - 1]++; break;
+//                    case 2: scores[curRobot - 1] = scores[curRobot - 1] + 2; break;
+//                  }
+//                }
+//              }
+//            }
+//            println("Cards Secured");
+//          }
+//          break;
+//        }
+//      }
+      //myClient.write("3,"+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].x)+","+str(robotList[curRobot - 1].x)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].y)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state));
+    }
   
   //runs the border subroutine
   for(int i = 0;i<robotList.length; i++){
     robotList[i].border();
   }
   
-  myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
   
 }
 
@@ -148,6 +224,16 @@ void interpretData() {
       robotList[int(list[1]) - 1].x = int(list[2]);
       robotList[int(list[1]) - 1].y = int(list[3]);
       robotList[int(list[1]) - 1].dir = int(list[4]);
+    break;
+    case "3":
+      boardCards[int(list[2])][int(list[1])].type = int(list[3]);
+      boardCards[int(list[2])][int(list[1])].state = int(list[4]);
+      boardCards[int(list[2])][int(list[1])].team = int(list[5]);
+      //robotList[int(list[1]) - 1].y = int(list[3]);
+      //robotList[int(list[1]) - 1].dir = int(list[4]);
+    break;
+    case "5":
+      scores[int(list[2])] = int(list[1]);
     break;
   }
 }
