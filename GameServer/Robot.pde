@@ -5,6 +5,7 @@ public class Robot{
   public int x;
   public int y;
   public int dir;
+  PImage sample, mask;
   
   //Sets up the robots atributes
   public Robot(int robotName, int robotX,int robotY, int robotDir){
@@ -61,14 +62,32 @@ public class Robot{
         case 4: fill(100,100,0); break;
         
     }
-    rect(this.x*64+16, this.y*64+16,64,64);
-    fill(0,0,0);
+    //rect(this.x*64+16, this.y*64+16,64,64);
     switch(this.dir){
-      case 0:rect(this.x*64+16 + 24, this.y*64+16,16,16); break;
-      case 1:rect(this.x*64+16 + 48, this.y*64+16 + 24,16,16); break;
-      case 2:rect(this.x*64+16 + 24, this.y*64+16 + 48,16,16); break;
-      case 3:rect(this.x*64+16, this.y*64+16 + 24,16,16); break;
+      case 0:sample = loadImage("RobotSprite.png");break;
+      case 1:sample = loadImage("RobotSpriteR.png");break;
+      case 2:sample = loadImage("RobotSpriteD.png");break;
+      case 3:sample = loadImage("RobotSpriteL.png");break;
     }
+    sample.resize(64, 0);
+    mask = loadImage("Mask.png");
+    sample.mask(mask);
+    image(sample, this.x*64+16, this.y*64+16);
+    rect(this.x*64+32, this.y*64+32,32,32);
+    /*//fill(0,0,0);
+    switch(this.dir){
+      case 0:rotate(PI * 0);break;
+      case 1:rotate(PI * 0.5);break;
+      case 2:rotate(PI * 1);break;
+      case 3:rotate(PI * 1.5);break;
+    }
+    translate(width/2, height/2);
+   //rotate(PI * (this.dir/2));
+   translate(-sample.width/2, -sample.height/2);
+   translate(-300, -400);
+   image(sample, this.x*64+16, this.y*64+16);
+   rect(this.x*64+32, this.y*64+32,32,32);
+   */
   }
   
   //Stops the robots form moving off the side of the board
