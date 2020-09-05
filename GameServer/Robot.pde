@@ -62,13 +62,6 @@ public class Robot{
         case 4: fill(100,100,0); break;
         
     }
-    //rect(this.x*64+16, this.y*64+16,64,64);
-    /*switch(this.dir){
-      case 0:sample = loadImage("RobotSprite.png");break;
-      case 1:sample = loadImage("RobotSpriteR.png");break;
-      case 2:sample = loadImage("RobotSpriteD.png");break;
-      case 3:sample = loadImage("RobotSpriteL.png");break;
-    }*/
     pushMatrix();
     sample = loadImage("RobotSprite.png");
     sample.resize(64, 0);
@@ -81,24 +74,9 @@ public class Robot{
       case 2:rotate(PI*1);break;
       case 3:rotate(PI*1.5);break;
     }
-    //rotate(PI*(dir/2));
     image(sample, -32, -32);
     rect(-16,-16,32,32);
     popMatrix();
-    /*//fill(0,0,0);
-    switch(this.dir){
-      case 0:rotate(PI * 0);break;
-      case 1:rotate(PI * 0.5);break;
-      case 2:rotate(PI * 1);break;
-      case 3:rotate(PI * 1.5);break;
-    }
-    translate(width/2, height/2);
-   //rotate(PI * (this.dir/2));
-   translate(-sample.width/2, -sample.height/2);
-   translate(-300, -400);
-   image(sample, this.x*64+16, this.y*64+16);
-   rect(this.x*64+32, this.y*64+32,32,32);
-   */
   }
   
   //Stops the robots form moving off the side of the board

@@ -6,12 +6,19 @@ boolean mousePressedPrev = false;
 boolean mouseClicked = false;
 String dataIn;
 int curRobot = 1;
+int repeatTimes2 = 1;
+int repeatTimes3 = 1;
+int timer = 6000;
  
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 int[] scores = {scoreTeam1,scoreTeam2,scoreTeam3,scoreTeam4};
+int[] programList = {7,7,7,7,7,7};
+int codeNum = 0;
+int runningCode = 0;
+int[] blockTypes = {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,6};
  
 Robot robot1 = new Robot(1,5,6,0);
 Robot robot2 = new Robot(2,6,1,3);
@@ -19,16 +26,16 @@ Robot robot3 = new Robot(3,1,0,2);
 Robot robot4 = new Robot(4,0,5,1);
 C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
+DragNDrop[] codeBlocks = new DragNDrop[blockTypes.length];
 
 void setup() { 
   size(1280, 720); 
   myClient = new Client(this, /*"172.12.152.42"*/"10.0.0.21", 5204);
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      //boardState[i][j] = false;
-    }
-  }
   boardCards = c_Randomizer.Randomize();
+  for(int i = 0; i < blockTypes.length;i++){
+    DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
+    codeBlocks[i] = dragNDrop;
+  }
 } 
  
 void draw() {
@@ -61,8 +68,79 @@ void draw() {
   for(int i = 0;i<robotList.length; i++){
     robotList[i].draw();
   }
-  //Sends the robot info to the server
+  for(int i = 0;i<programList.length;i++){
+    fill(100,100,100);
+    rect(1000,64+ i*48,128,48);
+    //print(programList[i]);
+  }
+  println();
+  for(int i= 0;i<codeBlocks.length;i++){
+    codeBlocks[i].setup();
+    codeBlocks[i].draw();
+    int[] tempReturn = codeBlocks[i].control(programList);
+    if(tempReturn[0] != 0){
+    programList[tempReturn[0]-1] = tempReturn[1];
+    }
   mousePressedPrev = mousePressed;
+}
+if(timer <= 0){
+    runCode();
+  }
+  textSize(32);
+  fill(255,255,255);
+  text(constrain(floor(timer/100),0,60), 1200, 64);
+  textSize(12);
+}
+
+public void runCode(){
+  runningCode = 1;
+  //int forceOut = 0;
+  //for(int j = 0;j < 1;j++){
+    //for(int i = 0;i < programList.length && forceOut == 0;i++){
+  switch(programList[codeNum]){
+    case 0: robotList[curRobot - 1].moveF(); break;
+    case 1: robotList[curRobot - 1].moveB(); break;
+    case 2: robotList[curRobot - 1].turnL(); break;
+    case 3: robotList[curRobot - 1].turnR(); break;
+    case 4: pickUpCard(); break;
+    case 5: if(repeatTimes2 < 2){
+      repeatTimes2++;
+      codeNum = -1;
+      //forceOut = 1;
+    }
+    break;
+    
+    case 6: if(repeatTimes3 < 3){
+      repeatTimes3++;
+      codeNum = -1;
+      //forceOut = 0;
+    }
+    break;
+    
+  }
+  if(codeNum == 5){
+    runningCode = 0;
+    codeNum = -1;
+    repeatTimes2 = 1;
+    repeatTimes3 = 1;
+    timer = 6000;
+    for(int i = 0;i < codeBlocks.length;i++){
+      codeBlocks[i].reset();
+    }
+    for(int i = 0;i < programList.length;i++){
+      programList[i] = 7;
+    }
+  }
+  codeNum++;
+  for(int i = 0;i<robotList.length; i++){
+    robotList[i].border();
+  }
+  myClient.write("7,"+runningCode);
+  myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  delay(500);
+    ///}
+    //forceOut = 0;
+  //}
 }
 
 int tileMouseX() {
@@ -93,6 +171,9 @@ int tileMouseY() {
   return squareColor;
 }*/
 
+public void pickUpCard(){
+myClient.write("4");
+}
 void  keyReleased() 
 {
   
@@ -106,99 +187,24 @@ void  keyReleased()
   }else if ((key == '4')) {
     curRobot = 4;
   }
-  
-  //runs the movement subroutines depends on the key pressed
-  if ((key == 'w' || key == 'W')) {
-    robotList[curRobot - 1].moveF();
-    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
-  
-  }
-  if ((key == 's' || key == 'S')) {
-    robotList[curRobot - 1].moveB();
-    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
-  
-  }
-  if ((key == 'a' || key == 'A')) {
-    robotList[curRobot - 1].turnL();
-    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
-  
-  }
-  if ((key == 'd' || key == 'D')) {
-    robotList[curRobot - 1].turnR();
-    myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
-  
-  }
-  
-  //interact with cards
-  if (key == ' ') {
-    myClient.write("4");
-//    if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0){
-//        switch(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type){
-//          case 0: /*println("blank");*/ break;
-//          case 1: if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == 0){boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Bird");} break;
-//          case 2: if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == 0){boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state = 1; boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team = curRobot; println("Special Bird");} break;
-//          case 3: switch(curRobot){
-//            case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
-//            case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
-//            case 3: robotList[curRobot - 1].y = 1; robotList[curRobot - 1].x = 2; break;
-//            case 4: robotList[curRobot - 1].y = 5; robotList[curRobot - 1].x = 1; break;   
-//          }
-//          for(int i=0; i<7; i++) {
-//            for(int j=0; j<7; j++) {
-//              boardCards[i][j].deCarry(curRobot);
-//              robotList[curRobot-1].dir = 0;
-//              //print(boardCards[i][j].type);
-//              //print("  ");
-//            }
-//            //println();
-//          }
-//          println("Null");
-//          break;
-//          case 4: switch(curRobot){
-//            case 1: robotList[curRobot - 1].y = 6; robotList[curRobot - 1].x = 5; break;
-//            case 2: robotList[curRobot - 1].y = 2; robotList[curRobot - 1].x = 6; break;
-//            case 3: robotList[curRobot - 1].y = 1; robotList[curRobot - 1].x = 2; break;
-//            case 4: robotList[curRobot - 1].y = 5; robotList[curRobot - 1].x = 1; break;  
-//          }
-//          for(int i=0; i<7; i++) {
-//            for(int j=0; j<7; j++) {
-//              boardCards[i][j].deCarry(curRobot);
-//              robotList[curRobot-1].dir = 0;
-//              //print(boardCards[i][j].type);
-//              //print("  ");
-//            }
-//            //println();
-//          }
-//          println("Crash");
-//          break;
-//          case 5: println("Hello World"); break;
-//          case 6: 
-//          if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team == curRobot){
-//            for(int i=0; i<7; i++) {
-//              for(int j=0; j<7; j++) {
-//                if(boardCards[i][j].state == 1 && boardCards[i][j].team == curRobot){
-//                  boardCards[i][j].state = 2;
-//                  switch(boardCards[i][j].type){
-//                    case 1: scores[curRobot - 1]++; break;
-//                    case 2: scores[curRobot - 1] = scores[curRobot - 1] + 2; break;
-//                  }
-//                }
-//              }
-//            }
-//            println("Cards Secured");
-//          }
-//          break;
-//        }
-//      }
-      //myClient.write("3,"+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].x)+","+str(robotList[curRobot - 1].x)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].y)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state));
+}
+
+void mousePressed(){
+  for(int i= 0;i<codeBlocks.length;i++){
+    int[] tempList = codeBlocks[i].cordReturn();
+    if(mouseX > tempList[0]&& mouseY>tempList[1] && mouseX < tempList[0] +tempList[2] && mouseY < tempList[1] +tempList[3]){
+     codeBlocks[i].heldOn();
+     i = codeBlocks.length;
     }
-  
-  //runs the border subroutine
-  for(int i = 0;i<robotList.length; i++){
-    robotList[i].border();
   }
-  
-  
+  if(mouseX > 1000 && mouseX < 1128 && mouseY > 64 && mouseY < 400){
+    programList[constrain(floor((mouseY-64)/48),0,5)] = 7;
+  }
+}
+void mouseReleased(){
+  for(int i= 0;i<codeBlocks.length;i++){
+    codeBlocks[i].heldOff();
+  }
 }
 
 void clientEvent(Client myClient) {
@@ -234,6 +240,9 @@ void interpretData() {
     break;
     case "5":
       scores[int(list[2])] = int(list[1]);
+    break;
+    case "6":
+      timer = int(list[1]);
     break;
   }
 }

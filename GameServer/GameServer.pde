@@ -79,7 +79,7 @@ void draw() {
   for(int i = 0;i<programList.length;i++){
     fill(100,100,100);
     rect(1000,64+ i*48,128,48);
-    print(programList[i]);
+    //print(programList[i]);
   }
   println();
   for(int i= 0;i<codeBlocks.length;i++){
@@ -97,12 +97,13 @@ void draw() {
   timerTick();
   textSize(32);
   fill(255,255,255);
-  text(floor(timer/100), 1200, 64);
+  text(constrain(floor(timer/100),0,60), 1200, 64);
   textSize(12);
 }
 
 public void timerTick(){
   timer-=6;
+  myServer.write("6,"+str(timer));
   delay(30);
 }
 
@@ -111,28 +112,30 @@ public void runCode(){
   //int forceOut = 0;
   //for(int j = 0;j < 1;j++){
     //for(int i = 0;i < programList.length && forceOut == 0;i++){
-  switch(programList[codeNum]){
-    case 0: robotList[curRobot - 1].moveF(); break;
-    case 1: robotList[curRobot - 1].moveB(); break;
-    case 2: robotList[curRobot - 1].turnL(); break;
-    case 3: robotList[curRobot - 1].turnR(); break;
-    case 4: pickUpCard(); break;
-    case 5: if(repeatTimes2 < 2){
-      repeatTimes2++;
-      codeNum = -1;
-      //forceOut = 1;
+  if(codeNum <= 5){
+    switch(programList[codeNum]){
+      case 0: robotList[curRobot - 1].moveF(); break;
+      case 1: robotList[curRobot - 1].moveB(); break;
+      case 2: robotList[curRobot - 1].turnL(); break;
+      case 3: robotList[curRobot - 1].turnR(); break;
+      case 4: pickUpCard(); break;
+      case 5: if(repeatTimes2 < 2){
+        repeatTimes2++;
+        codeNum = -1;
+        //forceOut = 1;
+      }
+      break;
+      
+      case 6: if(repeatTimes3 < 3){
+        repeatTimes3++;
+        codeNum = -1;
+        //forceOut = 0;
+      }
+      break;
+      
     }
-    break;
-    
-    case 6: if(repeatTimes3 < 3){
-      repeatTimes3++;
-      codeNum = -1;
-      //forceOut = 0;
-    }
-    break;
-    
   }
-  if(codeNum == 5){
+  if(codeNum >= 5 && runningCode == 0){
     //runningCode = 0;
     codeNum = -1;
     repeatTimes2 = 1;
@@ -150,6 +153,7 @@ public void runCode(){
     robotList[i].border();
   }
   myServer.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
+  runningCode = 0;
   delay(500);
     ///}
     //forceOut = 0;
@@ -261,6 +265,21 @@ if(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state == 0){
   }
   //myServer.write("3,"+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].x)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].y)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team));
 }  
+
+void  keyReleased() 
+{
+  
+  //Selects the diferent robots based on the key pressed
+  if ((key == '1')) {
+    curRobot = 1;
+  }else if ((key == '2')) {
+    curRobot = 2;
+  }else if ((key == '3')) {
+    curRobot = 3;
+  }else if ((key == '4')) {
+    curRobot = 4;
+  }
+}
   
 void mousePressed(){
   for(int i= 0;i<codeBlocks.length;i++){
@@ -316,6 +335,11 @@ void interpretData() {
     break;
     case "4":
       pickUpCard();
+    break;
+    case "7":
+      if(int(list[1]) == 1){
+        runningCode = 1;
+      }
     break;
   }
 }
