@@ -16,6 +16,7 @@ int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 int[] scores = {scoreTeam1,scoreTeam2,scoreTeam3,scoreTeam4};
+int[] programList = new int[6];
 
 //Assigning the robots valuables and adds them to an array
 Robot robot1 = new Robot(1,5,6,0);
@@ -24,6 +25,7 @@ Robot robot3 = new Robot(3,1,0,2);
 Robot robot4 = new Robot(4,0,5,1);
 C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
+DragNDrop dragNDrop = new DragNDrop();
 
 Server myServer;
 
@@ -65,7 +67,12 @@ void draw() {
   for(int i = 0;i<robotList.length; i++){
     robotList[i].draw();
   }
-  
+  for(int i = 0;i<programList.length;i++){
+    fill(100,100,100);
+    rect(1000,64+ i*48,128,48);
+  }
+  dragNDrop.setup();
+  dragNDrop.draw();
   mousePressedPrev = mousePressed;
 }
 
@@ -215,6 +222,15 @@ void  keyReleased()
   //Sends the robot info to the client
   myServer.write("3,"+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].x)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].y)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].type)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].state)+","+str(boardCards[robotList[curRobot - 1].y][robotList[curRobot - 1].x].team));
   
+}
+void mousePressed(){
+  int[] tempList = dragNDrop.cordReturn();
+  if(mouseX > tempList[0]&& mouseY>tempList[1] && mouseX < tempList[0] +tempList[2] && mouseY < tempList[1] +tempList[3]){
+   dragNDrop.heldOn();
+  }
+}
+void mouseReleased(){
+  dragNDrop.heldOff();
 }
 
 void clientEvent(Client myClient) {

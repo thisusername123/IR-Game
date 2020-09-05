@@ -63,17 +63,28 @@ public class Robot{
         
     }
     //rect(this.x*64+16, this.y*64+16,64,64);
-    switch(this.dir){
+    /*switch(this.dir){
       case 0:sample = loadImage("RobotSprite.png");break;
       case 1:sample = loadImage("RobotSpriteR.png");break;
       case 2:sample = loadImage("RobotSpriteD.png");break;
       case 3:sample = loadImage("RobotSpriteL.png");break;
-    }
+    }*/
+    pushMatrix();
+    sample = loadImage("RobotSprite.png");
     sample.resize(64, 0);
     mask = loadImage("Mask.png");
     sample.mask(mask);
-    image(sample, this.x*64+16, this.y*64+16);
-    rect(this.x*64+32, this.y*64+32,32,32);
+    translate(this.x*64+48,this.y*64+48);
+    switch(this.dir){
+      case 0:rotate(0);break;
+      case 1:rotate(PI/2);break;
+      case 2:rotate(PI*1);break;
+      case 3:rotate(PI*1.5);break;
+    }
+    //rotate(PI*(dir/2));
+    image(sample, -32, -32);
+    rect(-16,-16,32,32);
+    popMatrix();
     /*//fill(0,0,0);
     switch(this.dir){
       case 0:rotate(PI * 0);break;
