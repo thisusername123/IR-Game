@@ -41,10 +41,12 @@ void setup() {
   size(1280, 720);
   myServer = new Server(this, 5204);
   boardCards = c_Randomizer.Randomize();
+  
   for(int i = 0; i < blockTypes.length;i++){
     DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
     codeBlocks[i] = dragNDrop;
   }
+  
 }
 
 void draw() {
@@ -79,6 +81,7 @@ void draw() {
   for(int i = 0;i<robotList.length; i++){
     robotList[i].draw();
   }
+  
   for(int i = 0;i<programList.length;i++){
     fill(100,100,100);
     rect(1000,64+ i*48,128,48);
@@ -158,11 +161,12 @@ public void runCode(){
     }
   }
   if(codeNum >= 5 && runningCode == 0){
-    //runningCode = 0;
+    //runningCode = 2;
     codeNum = -1;
     repeatTimes2 = 1;
     repeatTimes3 = 1;
     timer = 6000;
+    
     for(int i = 0;i < codeBlocks.length;i++){
       codeBlocks[i].reset();
     }
@@ -269,6 +273,11 @@ if(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].state ==
       }
       myServer.write("2,"+str(robotList[inputRobot - 1].robotNum)+","+str(robotList[inputRobot - 1].x)+","+str(robotList[inputRobot - 1].y)+","+str(robotList[inputRobot - 1].dir));
       println("Null");
+      for(int i=0; i<7; i++) {
+        for(int j=0; j<7; j++) {
+          myServer.write("3,"+str(boardCards[i][j].x)+","+str(boardCards[i][j].y)+","+str(boardCards[i][j].type)+","+str(boardCards[i][j].state)+","+str(boardCards[i][j].team));
+        }
+      }
       break;
       case 4: switch(inputRobot){
         case 1: robotList[inputRobot - 1].y = 6; robotList[inputRobot - 1].x = 5; break;
@@ -287,6 +296,11 @@ if(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].state ==
       }
       myServer.write("2,"+str(robotList[inputRobot - 1].robotNum)+","+str(robotList[inputRobot - 1].x)+","+str(robotList[inputRobot - 1].y)+","+str(robotList[inputRobot - 1].dir));
       println("Crash");
+      for(int i=0; i<7; i++) {
+        for(int j=0; j<7; j++) {
+          myServer.write("3,"+str(boardCards[i][j].x)+","+str(boardCards[i][j].y)+","+str(boardCards[i][j].type)+","+str(boardCards[i][j].state)+","+str(boardCards[i][j].team));
+        }
+      }
       break;
       case 5: println("Hello World"); break;
       case 6: 
@@ -304,6 +318,7 @@ if(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].state ==
         }
         println("Cards Secured");
         myServer.write("5,"+str(scores[inputRobot-1])+","+str(inputRobot-1));
+        myServer.write("3,"+str(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].x)+","+str(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].y)+","+str(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].type)+","+str(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].state)+","+str(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].team));
       }
       break;
     }
@@ -343,6 +358,7 @@ void  keyReleased()
 }
   
 void mousePressed(){
+  
   for(int i= 0;i<codeBlocks.length;i++){
     int[] tempList = codeBlocks[i].cordReturn();
     if(mouseX > tempList[0]&& mouseY>tempList[1] && mouseX < tempList[0] +tempList[2] && mouseY < tempList[1] +tempList[3]){
