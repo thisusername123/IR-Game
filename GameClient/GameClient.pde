@@ -5,7 +5,7 @@ Card[][] boardCards = new Card[7][7];//which card
 boolean mousePressedPrev = false;
 boolean mouseClicked = false;
 String dataIn;
-int curRobot = 1;
+int curRobot = 0;
 int repeatTimes2 = 1;
 int repeatTimes3 = 1;
 int timer = 6000;
@@ -36,6 +36,7 @@ void setup() {
     DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
     codeBlocks[i] = dragNDrop;
   }
+  myClient.write("8");
 } 
  
 void draw() {
@@ -68,23 +69,26 @@ void draw() {
   for(int i = 0;i<robotList.length; i++){
     robotList[i].draw();
   }
-  for(int i = 0;i<programList.length;i++){
-    fill(100,100,100);
-    rect(1000,64+ i*48,128,48);
-    //print(programList[i]);
-  }
-  println();
-  for(int i= 0;i<codeBlocks.length;i++){
-    codeBlocks[i].setup();
-    codeBlocks[i].draw();
-    int[] tempReturn = codeBlocks[i].control(programList);
-    if(tempReturn[0] != 0){
-    programList[tempReturn[0]-1] = tempReturn[1];
+  if(curRobot != 0){
+    for(int i = 0;i<programList.length;i++){
+      fill(100,100,100);
+      rect(1000,64+ i*48,128,48);
+      //print(programList[i]);
     }
-  mousePressedPrev = mousePressed;
-}
-if(timer <= 0){
-    runCode();
+    println();
+    for(int i= 0;i<codeBlocks.length;i++){
+      codeBlocks[i].setup();
+      codeBlocks[i].draw();
+      int[] tempReturn = codeBlocks[i].control(programList);
+      if(tempReturn[0] != 0){
+      programList[tempReturn[0]-1] = tempReturn[1];
+      }
+    mousePressedPrev = mousePressed;
+  }
+  
+    if(timer <= 0){
+      runCode();
+    }
   }
   textSize(32);
   fill(255,255,255);
@@ -174,20 +178,6 @@ int tileMouseY() {
 public void pickUpCard(){
 myClient.write("4");
 }
-void  keyReleased() 
-{
-  
-  //Selects the diferent robots based on the key pressed
-  if ((key == '1')) {
-    curRobot = 1;
-  }else if ((key == '2')) {
-    curRobot = 2;
-  }else if ((key == '3')) {
-    curRobot = 3;
-  }else if ((key == '4')) {
-    curRobot = 4;
-  }
-}
 
 void mousePressed(){
   for(int i= 0;i<codeBlocks.length;i++){
@@ -243,6 +233,11 @@ void interpretData() {
     break;
     case "6":
       timer = int(list[1]);
+    break;
+    case "8":
+    if(int(list[1]) <= 4){
+      curRobot = int(list[1]);
+    }
     break;
   }
 }

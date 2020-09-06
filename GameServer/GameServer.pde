@@ -12,6 +12,7 @@ int curRobot = 1;
 int repeatTimes2 = 1;
 int repeatTimes3 = 1;
 int timer = 6000;
+int openRobot = 2;
 
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
@@ -340,6 +341,10 @@ void interpretData() {
       if(int(list[1]) == 1){
         runningCode = 1;
       }
+    break;
+    case "8":
+      myServer.write("8,"+str(openRobot));
+      openRobot++;
     break;
   }
 }
