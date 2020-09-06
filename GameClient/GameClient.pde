@@ -100,7 +100,13 @@ void draw() {
   
   textSize(32);
   fill(255,255,255);
-  text(constrain(floor(timer/100),0,60), 1200, 64);
+  
+  String[] list = split(dataIn, ',');
+  if(list[0] == "6"){
+    int time = int(list[1]);
+    text(constrain(floor(time/100),0,60), 1200, 64);
+  }
+  //text(constrain(floor(time/100),0,60), 1200, 64);
   textSize(12);
   
   if(won == 1){
@@ -176,25 +182,7 @@ int tileMouseY() {
   return floor((mouseY-16)/64);
 }
 
-/*int whatColor(int i, int j){
-  int squareColor = 0;
-  if(i<=3 && j<=3){//green
-    squareColor = 1;
-  }
-  if(i==3 && j==3){//middle
-    squareColor = 2;
-  }
-  if(i>=4 && j<=4){//blue
-    squareColor = 3;
-  }
-  if(i<=2 && j>=3){//yellow
-    squareColor = 4;
-  }
-  if(i>=3 && j>=4){//red
-    squareColor= 5;
-  }
-  return squareColor;
-}*/
+
 
 public void pickUpCard(){
 myClient.write("4," + str(curRobot));
