@@ -9,6 +9,8 @@ int curRobot = 0;
 int repeatTimes2 = 1;
 int repeatTimes3 = 1;
 int timer = 6000;
+int winner = 0;
+int won = 0;
  
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
@@ -85,15 +87,34 @@ void draw() {
       }
     mousePressedPrev = mousePressed;
   }
-  
-    if(timer <= 0){
-      runCode();
-    }
   }
+  if(won == 1){
+    delay(5000);
+    won = 0;
+    winner = 0;
+  }
+  
+  if(timer <= 0){
+    runCode();
+  }
+  
   textSize(32);
   fill(255,255,255);
   text(constrain(floor(timer/100),0,60), 1200, 64);
   textSize(12);
+  
+  if(won == 1){
+    textSize(48);
+    fill(255,255,255);
+    switch(winner){
+      case 1: text("Red Wins", 600, 500); break;
+      case 2: text("Blue Wins", 600, 500); break;
+      case 3: text("Green Wins", 600, 500); break;
+      case 4: text("Yellow Wins", 600, 500); break;
+      case 5: text("Tie", 1200, 64); break;
+    }
+    textSize(12);
+  }
 }
 
 public void runCode(){
@@ -176,7 +197,7 @@ int tileMouseY() {
 }*/
 
 public void pickUpCard(){
-myClient.write("4");
+myClient.write("4," + str(curRobot));
 }
 
 void mousePressed(){
@@ -238,6 +259,10 @@ void interpretData() {
     if(int(list[1]) <= 4){
       curRobot = int(list[1]);
     }
+    break;
+    case "9":
+      winner = int(list[1]);
+      won = 1;
     break;
   }
 }
