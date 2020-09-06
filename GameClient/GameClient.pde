@@ -5,10 +5,10 @@ Card[][] boardCards = new Card[7][7];//which card
 boolean mousePressedPrev = false;
 boolean mouseClicked = false;
 String dataIn;
-int curRobot = 0;
+int curRobot = 1;
 int repeatTimes2 = 1;
 int repeatTimes3 = 1;
-int timer = 6000;
+int timer;
 int winner = 0;
 int won = 0;
  
@@ -32,7 +32,7 @@ DragNDrop[] codeBlocks = new DragNDrop[blockTypes.length];
 
 void setup() { 
   size(1280, 720); 
-  myClient = new Client(this, /*"172.12.152.42"*/"10.0.0.21", 5204);
+  myClient = new Client(this, /*"172.12.152.42"*/"67.187.191.94", 5204);
   boardCards = c_Randomizer.Randomize();
   for(int i = 0; i < blockTypes.length;i++){
     DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
@@ -100,13 +100,7 @@ void draw() {
   
   textSize(32);
   fill(255,255,255);
-  
-  String[] list = split(dataIn, ',');
-  if(list[0] == "6"){
-    int time = int(list[1]);
-    text(constrain(floor(time/100),0,60), 1200, 64);
-  }
-  //text(constrain(floor(time/100),0,60), 1200, 64);
+  text(constrain(floor(timer),0,60), 1200, 64);
   textSize(12);
   
   if(won == 1){
@@ -154,7 +148,7 @@ public void runCode(){
     codeNum = -1;
     repeatTimes2 = 1;
     repeatTimes3 = 1;
-    timer = 6000;
+    //timer = 6000;
     for(int i = 0;i < codeBlocks.length;i++){
       codeBlocks[i].reset();
     }
@@ -215,6 +209,7 @@ void clientEvent(Client myClient) {
 }
 
 void interpretData() {
+  println(dataIn);
   String[] list = split(dataIn, ',');
   switch(list[0]) {
     case "0":
@@ -241,7 +236,7 @@ void interpretData() {
       scores[int(list[2])] = int(list[1]);
     break;
     case "6":
-      timer = int(list[1]);
+      timer = int(list[list.length - 1]);
     break;
     case "8":
     if(int(list[1]) <= 4){
