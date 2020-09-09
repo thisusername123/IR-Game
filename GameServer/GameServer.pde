@@ -128,7 +128,7 @@ void draw() {
 
 public void timerTick(){
   timer-=6;
-  myServer.write("6,"+str(timer));
+  myServer.write("6,"+str(timer/100));
   delay(30);
 }
 
@@ -221,7 +221,7 @@ void serverEvent() {
   clients++;
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
-      myServer.write("3,"+str(boardCards[i][j].x)+","+str(boardCards[i][j].y)+","+str(boardCards[i][j].type)+","+str(boardCards[i][j].state)+","+str(boardCards[i][j].team));
+      myServer.write("3,"+str(boardCards[i][j].x)+","+str(boardCards[i][j].y)+","+str(boardCards[i][j].type)+","+str(boardCards[i][j].state)+","+str(boardCards[i][j].team)+"         ");
     }
   }
 }
