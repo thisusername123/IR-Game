@@ -55,17 +55,10 @@ void draw() {
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
       boardCards[i][j].draw();
+      boardCards[i][j].show();
     }
   }
   
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      boardCards[i][j].show();
-      //print(boardCards[i][j].type);
-      //print("  ");
-    }
-    //println();
-  }
   for (int i = 0; i < scores.length;i++){
     switch(i){
       case 0: fill(255,0,0);break;
@@ -230,25 +223,6 @@ void disconnectEvent() {
   clients--;
 }
 
-/*int whatColor(int i, int j){
-  int squareColor = 0;
-  if(i<=3 && j<=3){//green
-    squareColor = 1;
-  }
-  if(i==3 && j==3){//middle
-    squareColor = 2;
-  }
-  if(i>=4 && j<=4){//blue
-    squareColor = 3;
-  }
-  if(i<=2 && j>=3){//yellow
-    squareColor = 4;
-  }
-  if(i>=3 && j>=4){//red
-    squareColor= 5;
-  }
-  return squareColor;
-}*/
 
 public void pickUpCard(int inputRobot){
 if(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].state == 0){
