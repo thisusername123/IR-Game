@@ -58,10 +58,10 @@ void draw() {
   
   if(setUpScreen){
     if(mouseX > 50 && mouseX < 200 && mouseY > 50 && mouseY < 100){
-      
+      print("kavan");
     }
     if(mouseX > 300 && mouseX < 500 && mouseY > 50 && mouseY < 100){
-      print("iusdfh");
+      print("antonio");
     }
   }
   
