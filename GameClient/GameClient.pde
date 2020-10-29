@@ -11,6 +11,7 @@ int repeatTimes3 = 1;
 int timer;
 int winner = 0;
 int won = 0;
+boolean setUpScreen = true;
  
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
@@ -32,7 +33,16 @@ DragNDrop[] codeBlocks = new DragNDrop[blockTypes.length];
 
 void setup() { 
   size(1280, 720); 
-  myClient = new Client(this, /*"172.12.152.42"*/"67.187.191.94", 5204);
+  rect(50, 50, 200, 50);
+  fill(0, 102, 153);
+  textSize(32);
+  text("Kavan", 55, 80);
+  fill(255, 255, 255);
+  rect(300, 50, 200, 50);
+  fill(0, 102, 153);
+  text("Antonio", 305, 80);
+
+  myClient = new Client(this, "192.168.50.84", 5204);
   boardCards = c_Randomizer.Randomize();
   for(int i = 0; i < blockTypes.length;i++){
     DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
@@ -42,79 +52,95 @@ void setup() {
 } 
  
 void draw() {
+ 
+  
   mouseClicked = mousePressed && !mousePressedPrev;
-  background(44, 62, 80);
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      boardCards[i][j].draw();
+  
+  if(setUpScreen){
+    if(mouseX > 50 && mouseX < 200 && mouseY > 50 && mouseY < 100){
+      
     }
-  }
-  for(int i=0; i<7; i++) {
-    for(int j=0; j<7; j++) {
-      boardCards[i][j].show();
-      //print(boardCards[i][j].type);
-      //print("  ");
+    if(mouseX > 300 && mouseX < 500 && mouseY > 50 && mouseY < 100){
+      print("iusdfh");
     }
-    //println();
-  }
-  for (int i = 0; i < scores.length;i++){
-    switch(i){
-      case 0: fill(255,0,0);break;
-      case 1: fill(0,0,255);break;
-      case 2: fill(0,255,0);break;
-      case 3: fill(255,255,0);break;
-    }
-    textSize(32);
-    text(scores[i], 464, i * 32 + 32);
   }
   
-  for(int i = 0;i<robotList.length; i++){
-    robotList[i].draw();
-  }
-  if(curRobot != 0){
-    for(int i = 0;i<programList.length;i++){
-      fill(100,100,100);
-      rect(1000,64+ i*48,128,48);
-      //print(programList[i]);
-    }
-    println();
-    for(int i= 0;i<codeBlocks.length;i++){
-      codeBlocks[i].setup();
-      codeBlocks[i].draw();
-      int[] tempReturn = codeBlocks[i].control(programList);
-      if(tempReturn[0] != 0){
-      programList[tempReturn[0]-1] = tempReturn[1];
+  if(!setUpScreen){
+    background(44, 62, 80);
+    for(int i=0; i<7; i++) {
+      for(int j=0; j<7; j++) {
+        boardCards[i][j].draw();
       }
-    mousePressedPrev = mousePressed;
-  }
-  }
-  if(won == 1){
-    delay(5000);
-    won = 0;
-    winner = 0;
-  }
-  
-  if(timer <= 0){
-    runCode();
-  }
-  
-  textSize(32);
-  fill(255,255,255);
-  text(constrain(floor(timer),0,60), 1200, 64);
-  textSize(12);
-  
-  if(won == 1){
-    textSize(48);
-    fill(255,255,255);
-    switch(winner){
-      case 1: text("Red Wins", 600, 500); break;
-      case 2: text("Blue Wins", 600, 500); break;
-      case 3: text("Green Wins", 600, 500); break;
-      case 4: text("Yellow Wins", 600, 500); break;
-      case 5: text("Tie", 1200, 64); break;
     }
+    for(int i=0; i<7; i++) {
+      for(int j=0; j<7; j++) {
+        boardCards[i][j].show();
+        //print(boardCards[i][j].type);
+        //print("  ");
+      }
+      //println();
+    }
+    for (int i = 0; i < scores.length;i++){
+      switch(i){
+        case 0: fill(255,0,0);break;
+        case 1: fill(0,0,255);break;
+        case 2: fill(0,255,0);break;
+        case 3: fill(255,255,0);break;
+      }
+      textSize(32);
+      text(scores[i], 464, i * 32 + 32);
+    }
+    
+    for(int i = 0;i<robotList.length; i++){
+      robotList[i].draw();
+    }
+    if(curRobot != 0){
+      for(int i = 0;i<programList.length;i++){
+        fill(100,100,100);
+        rect(1000,64+ i*48,128,48);
+        //print(programList[i]);
+      }
+      println();
+      for(int i= 0;i<codeBlocks.length;i++){
+        codeBlocks[i].setup();
+        codeBlocks[i].draw();
+        int[] tempReturn = codeBlocks[i].control(programList);
+        if(tempReturn[0] != 0){
+        programList[tempReturn[0]-1] = tempReturn[1];
+        }
+      mousePressedPrev = mousePressed;
+    }
+    }
+    if(won == 1){
+      delay(5000);
+      won = 0;
+      winner = 0;
+    }
+    
+    if(timer <= 0){
+      runCode();
+    }
+    
+    textSize(32);
+    fill(255,255,255);
+    text(constrain(floor(timer),0,60), 1200, 64);
     textSize(12);
+    
+    if(won == 1){
+      textSize(48);
+      fill(255,255,255);
+      switch(winner){
+        case 1: text("Red Wins", 600, 500); break;
+        case 2: text("Blue Wins", 600, 500); break;
+        case 3: text("Green Wins", 600, 500); break;
+        case 4: text("Yellow Wins", 600, 500); break;
+        case 5: text("Tie", 1200, 64); break;
+      }
+      textSize(12);
+    }
   }
+  mousePressedPrev = mousePressed;
+
 }
 
 public void runCode(){
@@ -248,4 +274,5 @@ void interpretData() {
       won = 1;
     break;
   }
+
 }
