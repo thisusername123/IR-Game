@@ -12,23 +12,30 @@ int timer;
 int winner = 0;
 int won = 0;
 boolean setUpScreen = true;
- 
+//scores
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 int[] scores = {scoreTeam1,scoreTeam2,scoreTeam3,scoreTeam4};
+//list of the moves you have selected
 int[] programList = {7,7,7,7,7,7};
+//which code block of the selected 6 is curently running goes 0 to 6
 int codeNum = 0;
+//if you are running code set to 1 to tell server code is being run
 int runningCode = 0;
+//list of how many of each code block there is ex: there is one 5 wich is repeat 2x
 int[] blockTypes = {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,6};
  
+//robots
 Robot robot1 = new Robot(1,5,6,0);
 Robot robot2 = new Robot(2,6,1,3);
 Robot robot3 = new Robot(3,1,0,2);
 Robot robot4 = new Robot(4,0,5,1);
-C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
+//initiates card randomiser
+C_Randomizer c_Randomizer = new C_Randomizer();
+//set length of code block array
 DragNDrop[] codeBlocks = new DragNDrop[blockTypes.length];
 
 void setup() { 
@@ -43,11 +50,14 @@ void setup() {
   text("Antonio", 305, 80);
 
   myClient = new Client(this, "192.168.50.84", 5204);
+  //randomises the cards returning stacked arrays of card objects
   boardCards = c_Randomizer.Randomize();
+  //sets up the code blocks
   for(int i = 0; i < blockTypes.length;i++){
     DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
     codeBlocks[i] = dragNDrop;
   }
+  //ask for designation
   myClient.write("8");
 } 
  
@@ -67,11 +77,13 @@ void draw() {
   
   if(!setUpScreen){
     background(44, 62, 80);
+    //draws the cards
     for(int i=0; i<7; i++) {
       for(int j=0; j<7; j++) {
         boardCards[i][j].draw();
       }
     }
+    //shows which card is which, seperate so it can be disabled if you want 
     for(int i=0; i<7; i++) {
       for(int j=0; j<7; j++) {
         boardCards[i][j].show();
@@ -80,6 +92,7 @@ void draw() {
       }
       //println();
     }
+    //display score
     for (int i = 0; i < scores.length;i++){
       switch(i){
         case 0: fill(255,0,0);break;
@@ -90,17 +103,20 @@ void draw() {
       textSize(32);
       text(scores[i], 464, i * 32 + 32);
     }
-    
+    //draw robots
     for(int i = 0;i<robotList.length; i++){
       robotList[i].draw();
     }
+    //if you have a robot
     if(curRobot != 0){
+      //draw rect for block input
       for(int i = 0;i<programList.length;i++){
         fill(100,100,100);
         rect(1000,64+ i*48,128,48);
         //print(programList[i]);
       }
       println();
+      //draw the dragable code blocks
       for(int i= 0;i<codeBlocks.length;i++){
         codeBlocks[i].setup();
         codeBlocks[i].draw();
@@ -109,14 +125,15 @@ void draw() {
         programList[tempReturn[0]-1] = tempReturn[1];
         }
       mousePressedPrev = mousePressed;
+      }
     }
-    }
+    //reset win after 5s
     if(won == 1){
       delay(5000);
       won = 0;
       winner = 0;
     }
-    
+    //run code when timer 0
     if(timer <= 0){
       runCode();
     }
@@ -126,6 +143,7 @@ void draw() {
     text(constrain(floor(timer),0,60), 1200, 64);
     textSize(12);
     
+    //display win if won
     if(won == 1){
       textSize(48);
       fill(255,255,255);
@@ -143,6 +161,7 @@ void draw() {
 
 }
 
+//run code
 public void runCode(){
   runningCode = 1;
   //int forceOut = 0;
@@ -169,6 +188,7 @@ public void runCode(){
     break;
     
   }
+  //if done running code reset everything
   if(codeNum == 5){
     runningCode = 0;
     codeNum = -1;
@@ -182,11 +202,13 @@ public void runCode(){
       programList[i] = 7;
     }
   }
+  //increment which block is run
   codeNum++;
   for(int i = 0;i<robotList.length; i++){
     robotList[i].border();
   }
   myClient.write("7,"+runningCode);
+  //send over robot info
   myClient.write("2,"+str(robotList[curRobot - 1].robotNum)+","+str(robotList[curRobot - 1].x)+","+str(robotList[curRobot - 1].y)+","+str(robotList[curRobot - 1].dir));
   delay(500);
     ///}

@@ -15,15 +15,19 @@ int timer = 6000;
 int openRobot = 1;
 int winner = 0;
 int won = 0;
-
+//scores
 int scoreTeam1 = 0;
 int scoreTeam2 = 0;
 int scoreTeam3 = 0;
 int scoreTeam4 = 0;
 int[] scores = {scoreTeam1,scoreTeam2,scoreTeam3,scoreTeam4};
+//list of the moves you have selected
 int[] programList = {7,7,7,7,7,7};
+//which code block of the selected 6 is curently running goes 0 to 6
 int codeNum = 0;
+//if you are running code set to 1 to tell server code is being run
 int runningCode = 0;
+//list of how many of each code block there is ex: there is one 5 wich is repeat 2x
 int[] blockTypes = {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,6};
 
 //Assigning the robots valuables and adds them to an array
@@ -31,8 +35,10 @@ Robot robot1 = new Robot(1,5,6,0);
 Robot robot2 = new Robot(2,6,1,3);
 Robot robot3 = new Robot(3,1,0,2);
 Robot robot4 = new Robot(4,0,5,1);
-C_Randomizer c_Randomizer = new C_Randomizer();
 Robot[] robotList = {robot1,robot2, robot3, robot4};
+//initiates card randomiser
+C_Randomizer c_Randomizer = new C_Randomizer();
+//set length of code block array
 DragNDrop[] codeBlocks = new DragNDrop[blockTypes.length];
 
 Server myServer;
@@ -40,8 +46,9 @@ Server myServer;
 void setup() {
   size(1280, 720);
   myServer = new Server(this, 5204);
+  //randomises the cards returning stacked arrays of card objects
   boardCards = c_Randomizer.Randomize();
-  
+  //sets up the code blocks
   for(int i = 0; i < blockTypes.length;i++){
     DragNDrop dragNDrop = new DragNDrop(blockTypes[i],512,32 + blockTypes[i]*64);
     codeBlocks[i] = dragNDrop;
@@ -52,13 +59,14 @@ void setup() {
 void draw() {
   mouseClicked = mousePressed && !mousePressedPrev;
   background(44, 62, 80);
+  //draws and shows each card
   for(int i=0; i<7; i++) {
     for(int j=0; j<7; j++) {
       boardCards[i][j].draw();
       boardCards[i][j].show();
     }
   }
-  
+  //display score
   for (int i = 0; i < scores.length;i++){
     switch(i){
       case 0: fill(255,0,0);break;
@@ -75,12 +83,14 @@ void draw() {
     robotList[i].draw();
   }
   
+  //draw rect for block input
   for(int i = 0;i<programList.length;i++){
     fill(100,100,100);
     rect(1000,64+ i*48,128,48);
     //print(programList[i]);
   }
   println();
+  //draw rect for block input
   for(int i= 0;i<codeBlocks.length;i++){
     codeBlocks[i].setup();
     codeBlocks[i].draw();
@@ -90,11 +100,13 @@ void draw() {
     }
     mousePressedPrev = mousePressed;
   }
+  //reset win after 5s
   if(won == 1){
     delay(5000);
     won = 0;
     winner = 0;
   }
+  //run code when timer 0
   if(timer <= 0){
     runCode();
     checkWin();
@@ -105,6 +117,7 @@ void draw() {
   text(constrain(floor(timer/100),0,60), 1200, 64);
   textSize(12);
   
+  //display win if won
   if(won == 1){
     textSize(48);
     fill(255,255,255);
@@ -119,12 +132,14 @@ void draw() {
   }
 }
 
+//tick the timer
 public void timerTick(){
   timer-=6;
   myServer.write("6,"+str(timer/100));
   delay(30);
 }
 
+//run code
 public void runCode(){
   //runningCode = 1;
   //int forceOut = 0;
@@ -153,6 +168,7 @@ public void runCode(){
       
     }
   }
+  //if done running code reset everything
   if(codeNum >= 5 && runningCode == 0){
     //runningCode = 2;
     codeNum = -1;
@@ -167,6 +183,7 @@ public void runCode(){
       programList[i] = 7;
     }
   }
+  //increment which block is run
   codeNum++;
   for(int i = 0;i<robotList.length; i++){
     robotList[i].border();
@@ -179,6 +196,7 @@ public void runCode(){
   //}
 }
 
+//check if won
 public void checkWin(){
   won = 1;
   for(int i=0; i<7; i++) {
@@ -210,6 +228,7 @@ int tileMouseY() {
   return floor((mouseY-16)/64);
 }
 
+//send over cards
 void serverEvent() {
   clients++;
   for(int i=0; i<7; i++) {
@@ -223,7 +242,7 @@ void disconnectEvent() {
   clients--;
 }
 
-
+//pick up card and determine function of 
 public void pickUpCard(int inputRobot){
 if(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].state == 0){
     switch(boardCards[robotList[inputRobot - 1].y][robotList[inputRobot - 1].x].type){
