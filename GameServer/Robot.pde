@@ -4,12 +4,13 @@ public class Robot{
   public int x;
   public int y;
   public int dir;
+  PImage sample, mask;
   
   //Sets up the robots atributes
   public Robot(int robotName, int robotX,int robotY, int robotDir){
     this.robotNum = robotName;
-    this.x = robotX + 16;
-    this.y = robotY + 16;
+    this.x = robotX;
+    this.y = robotY;
     this.dir = robotDir;
   }
   
@@ -32,10 +33,10 @@ public class Robot{
   //Moves the robot forward depending on the orintation
   public void moveF(){
     switch(this.dir){
-        case 0: this.y = this.y - 64; break;
-        case 1: this.x = this.x + 64; break;
-        case 2: this.y = this.y + 64; break;
-        case 3: this.x = this.x - 64; break;
+        case 0: this.y = this.y - 1; break;
+        case 1: this.x = this.x + 1; break;
+        case 2: this.y = this.y + 1; break;
+        case 3: this.x = this.x - 1; break;
         
       }
   }
@@ -43,10 +44,10 @@ public class Robot{
   //Moves the robot back depending on the oreintation
   public void moveB(){
     switch(this.dir){
-        case 0: this.y = this.y + 64; break;
-        case 1: this.x = this.x - 64; break;
-        case 2: this.y = this.y - 64; break;
-        case 3: this.x = this.x + 64; break;
+        case 0: this.y = this.y + 1; break;
+        case 1: this.x = this.x - 1; break;
+        case 2: this.y = this.y - 1; break;
+        case 3: this.x = this.x + 1; break;
         
       }
   }
@@ -60,27 +61,34 @@ public class Robot{
         case 4: fill(100,100,0); break;
         
     }
-    rect(this.x, this.y,64,64);
-    fill(0,0,0);
+    pushMatrix();
+    sample = loadImage("RobotSprite.png");
+    sample.resize(64, 0);
+    mask = loadImage("Mask.png");
+    sample.mask(mask);
+    translate(this.x*64+48,this.y*64+48);
     switch(this.dir){
-      case 0:rect(this.x + 24, this.y,16,16); break;
-      case 1:rect(this.x + 48, this.y + 24,16,16); break;
-      case 2:rect(this.x + 24, this.y + 48,16,16); break;
-      case 3:rect(this.x, this.y + 24,16,16); break;
+      case 0:rotate(0);break;
+      case 1:rotate(PI/2);break;
+      case 2:rotate(PI*1);break;
+      case 3:rotate(PI*1.5);break;
     }
+    image(sample, -32, -32);
+    rect(-16,-16,32,32);
+    popMatrix();
   }
   
   //Stops the robots form moving off the side of the board
   public void border(){
-    if (this.x > 400){
-    this.x = 400;
-    }else if (this.x < 16){
-    this.x = 16;
+    if (this.x > 6){
+    this.x = 6;
+    }else if (this.x < 0){
+    this.x = 0;
     }
-    if (this.y > 400){
-    this.y = 400;
-    }else if (this.y < 16){
-    this.y = 16;
+    if (this.y > 6){
+    this.y = 6;
+    }else if (this.y < 0){
+    this.y = 0;
     }
   }
 }
